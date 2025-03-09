@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Card from "../components/Card/index.astro";
 import { Icon } from "astro-icon/components";
 import Nav from "../components/Nav.astro";
+import Chatbot from "../components/Chatbot.astro";
 
 // Component Imports
 import CardHover from "../components/Card/CardHover.astro";
@@ -280,6 +281,11 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
       </div>
     </footer>
   </div>
+  
+  <!-- Chatbot -->
+  <!-- 
+  <Chatbot />
+  -->
 </BaseLayout>
 
 <style>
@@ -1045,8 +1051,8 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
   /* Fixed header on scroll for mobile */
   @media (max-width: 768px) {
     .terminal-header {
-      position: sticky;
-      top: 0;
+      position: relative;
+      top: auto;
       z-index: 100;
     }
     
@@ -1128,13 +1134,13 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
   @media (max-width: 768px) {
     /* Navbar with backdrop filter for better readability */
     .terminal-navbar {
-      position: sticky;
-      top: 53px; /* Height of terminal header */
+      position: relative;
+      top: auto;
       z-index: 90;
       background-color: rgba(16, 16, 18, 0.95);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      margin-top: -1.5rem;
+      margin-top: -0.75rem;
       margin-left: -0.75rem;
       margin-right: -0.75rem;
       padding: 0.75rem;
@@ -1174,6 +1180,133 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
       overflow-x: hidden;
     }
   }
+
+  /* Animasi tambahan untuk text dan section */
+  @keyframes glow {
+    0%, 100% { text-shadow: 0 0 5px var(--terminal-accent-alpha); }
+    50% { text-shadow: 0 0 15px var(--terminal-accent); }
+  }
+
+  @keyframes borderGlow {
+    0%, 100% { border-color: var(--terminal-border); }
+    50% { border-color: var(--terminal-accent-alpha); box-shadow: 0 0 15px rgba(235, 68, 68, 0.3); }
+  }
+
+  /* Efek tambahan untuk section */
+  .terminal-section {
+    transition: all 0.5s ease;
+  }
+
+  .terminal-section:hover {
+    transform: translateY(-3px);
+  }
+
+  .terminal-section-title h2 {
+    animation: glow 3s ease-in-out infinite;
+  }
+
+  /* Tambahan animasi untuk card dan item */
+  .terminal-service-item,
+  .terminal-quote-container,
+  .terminal-skill-category {
+    animation: borderGlow 5s ease-in-out infinite;
+    animation-delay: calc(var(--animation-delay, 0ms) + 500ms);
+  }
+
+  /* Hover effect untuk terminal-nav-link */
+  .terminal-nav-link {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .terminal-nav-link:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--terminal-accent);
+    transition: width 0.3s ease;
+  }
+
+  .terminal-nav-link:hover:after {
+    width: 100%;
+  }
+
+  /* Membuat efek tulisan */
+  .terminal-service-title,
+  .terminal-skill-category-title,
+  .terminal-quote-text {
+    transition: all 0.3s ease;
+  }
+
+  .terminal-service-title:hover,
+  .terminal-skill-category-title:hover {
+    color: var(--terminal-accent);
+    transform: translateX(5px);
+  }
+
+  /* Transisi halus untuk semua hover */
+  * {
+    transition-property: color, background-color, border-color, transform, opacity, box-shadow;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+  }
+
+  /* Tambahan class untuk efek animasi */
+  .section-revealed {
+    animation: sectionReveal 0.8s ease-out forwards;
+  }
+  
+  @keyframes sectionReveal {
+    from { opacity: 0.5; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .title-revealed {
+    opacity: 0;
+    animation: titleReveal 1s ease-out 0.3s forwards;
+  }
+  
+  @keyframes titleReveal {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  .title-glow {
+    animation: titleGlow 2s ease-in-out 1s infinite alternate;
+  }
+  
+  @keyframes titleGlow {
+    from { text-shadow: 0 0 5px var(--terminal-accent-alpha); }
+    to { text-shadow: 0 0 15px var(--terminal-accent), 0 0 5px rgba(235, 68, 68, 0.8); }
+  }
+  
+  .highlight-section {
+    animation: highlightSection 1.5s ease-out;
+  }
+  
+  @keyframes highlightSection {
+    0%, 100% { background-color: transparent; }
+    30% { background-color: rgba(235, 68, 68, 0.1); }
+  }
+  
+  /* Efek blink untuk terminal cursor */
+  .terminal-prompt-cursor.blink {
+    opacity: 0;
+  }
+  
+  /* Efek fade-in untuk seluruh halaman */
+  body {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  
+  body.page-loaded {
+    opacity: 1;
+  }
 </style>
 
 <script>
@@ -1187,13 +1320,28 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
+          
+          // Tambahkan class untuk special effect pada section saat muncul
+          if (entry.target.classList.contains('terminal-section')) {
+            entry.target.classList.add('section-revealed');
+            
+            // Tambahkan efek pada judul section
+            const title = entry.target.querySelector('.terminal-section-title h2');
+            if (title) {
+              title.classList.add('title-revealed');
+              setTimeout(() => {
+                title.classList.add('title-glow');
+              }, 500);
+            }
+          }
+          
           animationObserver.unobserve(entry.target);
         }
       });
     }, { threshold: 0.1, rootMargin: '0px 0px 50px 0px' });
     
-    // Apply to animation elements
-    document.querySelectorAll('.terminal-tech-item, .terminal-skill-category, .terminal-skill-item, .terminal-service-item')
+    // Apply to animation elements and sections
+    document.querySelectorAll('.terminal-tech-item, .terminal-skill-category, .terminal-skill-item, .terminal-service-item, .terminal-section')
       .forEach(el => animationObserver.observe(el));
     
     // Typewriter effect with performance optimizations
@@ -1233,7 +1381,7 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
       commandObserver.observe(prompt);
     });
     
-    // Smooth scrolling with offset for fixed header on mobile
+    // Smooth scrolling tanpa fixed header offset
     document.querySelectorAll('.terminal-nav-link').forEach(function(link) {
       link.addEventListener('click', function(this: HTMLAnchorElement, e: Event) {
         e.preventDefault();
@@ -1243,45 +1391,37 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
           const targetElement = document.getElementById(targetId);
           
           if (targetElement) {
-            const headerHeight = isMobile ? document.querySelector('.terminal-header')?.clientHeight || 0 : 0;
-            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
-            
-            window.scrollTo({
-              top: targetPosition,
-              behavior: 'smooth'
+            // Scroll biasa tanpa offset header karena sudah tidak sticky
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
             });
+            
+            // Efek highlight pada section yang dituju
+            setTimeout(() => {
+              targetElement.classList.add('highlight-section');
+              setTimeout(() => {
+                targetElement.classList.remove('highlight-section');
+              }, 1500);
+            }, 500);
           }
         }
       });
     });
     
-    // Add active class to nav links on scroll
-    const sections = document.querySelectorAll('.terminal-section');
-    const navLinks = document.querySelectorAll('.terminal-nav-link');
-    
-    const handleScroll = () => {
-      let current = '';
-      const headerHeight = isMobile ? document.querySelector('.terminal-header')?.clientHeight || 0 : 0;
-      
-      sections.forEach((section) => {
-        const sectionTop = section.getBoundingClientRect().top;
-        if (sectionTop <= headerHeight + 100) {
-          current = section.getAttribute('id') || '';
-        }
-      });
-      
-      navLinks.forEach((link) => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-          link.classList.add('active');
-        }
+    // Tambahkan efek tulisan berkedip pada terminal prompt
+    const cursorBlink = () => {
+      const cursors = document.querySelectorAll('.terminal-prompt-cursor');
+      cursors.forEach(cursor => {
+        cursor.classList.toggle('blink');
       });
     };
     
-    window.addEventListener('scroll', handleScroll);
+    // Panggil fungsi cursorBlink setiap 500ms
+    setInterval(cursorBlink, 500);
     
-    // Initial call to set active nav item
-    handleScroll();
+    // Tambahkan efek fade-in untuk seluruh halaman
+    document.body.classList.add('page-loaded');
   });
 </script>
 
@@ -1320,6 +1460,11 @@ Perubahan Layout untuk Responsivitas:
    - Meningkatkan kontras warna untuk teks lebih mudah dibaca
    - Memperbesar ukuran target sentuh pada elemen interaktif 
    - Meningkatkan line height pada paragraf untuk keterbacaan lebih baik
+
+6. Pengembangan Chatbot:
+   - Implementasi chatbot dengan tema terminal yang konsisten
+   - Peningkatan kemampuan responsive pada mobile
+   - CATATAN: Chatbot dinonaktifkan sementara (2023-08-24)
 
 Periksa log:
 - Pastikan tampilan responsif pada berbagai ukuran layar

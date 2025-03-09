@@ -1,0 +1,839 @@
+---
+import { Icon } from "astro-icon/components";
+import type { ChatMessage } from "../data/chatbot";
+---
+
+<div class="terminal-chatbot-container">
+  <button class="terminal-chatbot-toggle">
+    <span class="terminal-chatbot-toggle-icon">
+      <Icon name="ri:message-3-line" />
+    </span>
+    <span class="terminal-chatbot-toggle-close">
+      <Icon name="ri:close-line" />
+    </span>
+  </button>
+  
+  <div class="terminal-chatbot">
+    <div class="terminal-chatbot-header">
+      <div class="terminal-buttons">
+        <span class="terminal-button close"></span>
+        <span class="terminal-button minimize"></span>
+        <span class="terminal-button maximize"></span>
+      </div>
+      <div class="terminal-chatbot-title">digital-assistant@portfolio:~$</div>
+    </div>
+    
+    <div class="terminal-chatbot-messages">
+      <!-- Messages will be added here via JavaScript -->
+    </div>
+    
+    <div class="terminal-chatbot-actions">
+      <!-- Action buttons will be added here via JavaScript -->
+    </div>
+    
+    <div class="terminal-chatbot-input">
+      <div class="terminal-chatbot-input-prefix">
+        <span class="terminal-prompt-user">user</span>
+        <span class="terminal-prompt-separator">@</span>
+        <span class="terminal-prompt-host">chat</span>
+        <span class="terminal-prompt-path">:~$</span>
+      </div>
+      <input 
+        type="text" 
+        class="terminal-chatbot-input-field" 
+        placeholder="Tulis pesan Anda di sini..." 
+        aria-label="Input pesan chat"
+      />
+      <button class="terminal-chatbot-send">
+        <Icon name="ri:send-plane-fill" />
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .terminal-chatbot-container {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+  .terminal-chatbot-toggle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--terminal-accent);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1010;
+  }
+  
+  .terminal-chatbot-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  }
+  
+  .terminal-chatbot-toggle-icon,
+  .terminal-chatbot-toggle-close {
+    font-size: 1.5rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .terminal-chatbot-toggle-close {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  
+  .terminal-chatbot-toggle.active .terminal-chatbot-toggle-icon {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  
+  .terminal-chatbot-toggle.active .terminal-chatbot-toggle-close {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  
+  .terminal-chatbot {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 350px;
+    height: 500px;
+    background-color: var(--terminal-bg);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform-origin: bottom right;
+    transform: scale(0);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid var(--terminal-border);
+  }
+  
+  .terminal-chatbot.active {
+    transform: scale(1);
+    opacity: 1;
+  }
+  
+  .terminal-chatbot-header {
+    background-color: var(--terminal-header);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--terminal-border);
+  }
+  
+  .terminal-chatbot-title {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--terminal-text);
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .terminal-chatbot-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .terminal-chatbot-message {
+    max-width: 80%;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    animation: fadeInMessage 0.3s ease forwards;
+    word-break: break-word;
+  }
+  
+  @keyframes fadeInMessage {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .terminal-chatbot-message.bot {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--terminal-border);
+    color: var(--terminal-text);
+    align-self: flex-start;
+    border-top-left-radius: 0;
+  }
+  
+  .terminal-chatbot-message.user {
+    background-color: var(--terminal-accent-alpha);
+    color: white;
+    align-self: flex-end;
+    border-top-right-radius: 0;
+  }
+  
+  .terminal-chatbot-message-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  
+  .terminal-chatbot-message-time {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    margin-top: 0.5rem;
+    text-align: right;
+  }
+  
+  .terminal-chatbot-actions {
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border-top: 1px solid var(--terminal-border);
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  .terminal-chatbot-action {
+    padding: 0.4rem 0.75rem;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--terminal-border);
+    color: var(--terminal-text);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  
+  .terminal-chatbot-action:hover {
+    background-color: var(--terminal-accent-alpha);
+    border-color: var(--terminal-accent);
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  .terminal-chatbot-input {
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-top: 1px solid var(--terminal-border);
+    background-color: var(--terminal-header);
+  }
+  
+  .terminal-chatbot-input-prefix {
+    display: flex;
+    align-items: center;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--terminal-text);
+    white-space: nowrap;
+  }
+  
+  .terminal-chatbot-input-field {
+    flex: 1;
+    background-color: transparent;
+    border: none;
+    color: var(--terminal-text);
+    font-family: monospace;
+    font-size: 0.9rem;
+    padding: 0.25rem 0;
+    outline: none;
+  }
+  
+  .terminal-chatbot-input-field::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .terminal-chatbot-send {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--terminal-accent);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.9;
+  }
+  
+  .terminal-chatbot-send:hover {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .terminal-chatbot {
+      width: calc(100vw - 40px);
+      height: 60vh;
+      max-height: 500px;
+      bottom: 80px;
+      right: 0;
+      left: 0;
+      margin: 0 auto;
+    }
+    
+    .terminal-chatbot-container {
+      right: 10px;
+      bottom: 10px;
+    }
+    
+    .terminal-chatbot-message {
+      max-width: 85%;
+    }
+
+    /* Mobile keyboard adjustments */
+    .terminal-chatbot.keyboard-visible {
+      bottom: 0;
+      height: 85vh;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .terminal-chatbot-toggle {
+      width: 50px;
+      height: 50px;
+    }
+
+    /* Make action buttons more touch-friendly */
+    .terminal-chatbot-action {
+      padding: 0.6rem 0.85rem;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    /* Enhance input field for mobile */
+    .terminal-chatbot-input {
+      padding: 0.85rem;
+    }
+
+    .terminal-chatbot-input-field {
+      font-size: 1rem;
+      padding: 0.35rem 0;
+    }
+
+    .terminal-chatbot-send {
+      width: 38px;
+      height: 38px;
+    }
+  }
+  
+  /* Landscape mode adjustments */
+  @media (max-width: 768px) and (orientation: landscape) {
+    .terminal-chatbot {
+      height: 75vh;
+      max-height: 300px;
+    }
+
+    .terminal-chatbot-messages {
+      padding: 0.75rem;
+      gap: 0.75rem;
+    }
+  }
+
+  /* For devices with small screens */
+  @media (max-width: 480px) {
+    .terminal-chatbot-toggle {
+      width: 45px;
+      height: 45px;
+    }
+
+    .terminal-chatbot-message {
+      padding: 0.6rem 0.8rem;
+      font-size: 0.95rem;
+    }
+  }
+
+  /* Full screen mode for mobile */
+  .terminal-chatbot.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    z-index: 2000;
+  }
+
+  /* Button to toggle fullscreen mode */
+  .terminal-fullscreen-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--terminal-text);
+    opacity: 0.7;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .terminal-fullscreen-toggle:hover {
+    opacity: 1;
+  }
+
+  @media (max-width: 768px) {
+    .terminal-fullscreen-toggle {
+      display: block;
+    }
+  }
+
+  /* Scrollbar styling */
+  .terminal-chatbot-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .terminal-chatbot-messages::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  .terminal-chatbot-messages::-webkit-scrollbar-thumb {
+    background-color: var(--terminal-accent-alpha);
+    border-radius: 3px;
+  }
+</style>
+
+<script>
+  // Data untuk chatbot
+  interface ChatMessage {
+    sender: 'bot' | 'user';
+    text: string;
+    timestamp: number;
+  }
+
+  interface ChatAction {
+    label: string;
+    value: string;
+  }
+
+  interface ChatResponse {
+    text: string;
+    actions?: ChatAction[];
+  }
+
+  // Data untuk pertanyaan dan jawaban chatbot
+  const chatbotResponses: Record<string, ChatResponse> = {
+    default: {
+      text: "Halo! Saya adalah asisten digital Khuzayfah. Ada yang bisa saya bantu terkait layanan SEO dan Digital Marketing?",
+      actions: [
+        { label: "Apa layanan yang ditawarkan?", value: "services" },
+        { label: "Bagaimana proses kerja Anda?", value: "process" },
+        { label: "Berapa biaya untuk layanan?", value: "pricing" },
+        { label: "Kontak langsung", value: "contact" }
+      ]
+    },
+    greeting: {
+      text: "Halo! Senang bertemu dengan Anda. Ada yang bisa saya bantu?",
+      actions: [
+        { label: "Layanan", value: "services" },
+        { label: "Tentang", value: "about" }
+      ]
+    },
+    services: {
+      text: "Saya menawarkan beberapa layanan digital marketing dan SEO, termasuk:\n\n• Optimasi SEO Website\n• Manajemen Sosial Media\n• Content Marketing\n• Google Ads & Facebook Ads\n• Analisis Kompetitor\n\nLayanan mana yang ingin Anda ketahui lebih lanjut?",
+      actions: [
+        { label: "SEO Website", value: "seo" },
+        { label: "Sosial Media", value: "social" },
+        { label: "Content Marketing", value: "content" },
+        { label: "Iklan Online", value: "ads" }
+      ]
+    },
+    seo: {
+      text: "Layanan SEO saya meliputi:\n\n• Audit website komprehensif\n• Riset kata kunci\n• Optimasi on-page\n• Optimasi teknis\n• Link building\n• Analisis dan pelaporan bulanan\n\nHasil SEO biasanya terlihat dalam 3-6 bulan, tergantung kondisi website dan persaingan.",
+      actions: [
+        { label: "Berapa biayanya?", value: "pricing" },
+        { label: "Proses kerja", value: "process" },
+        { label: "Klien sebelumnya", value: "portfolio" }
+      ]
+    },
+    social: {
+      text: "Manajemen sosial media mencakup:\n\n• Pembuatan dan pengelolaan akun\n• Pembuatan konten visual\n• Penjadwalan posting\n• Interaksi dengan audience\n• Analisa performa\n• Laporan bulanan\n\nPlatform: Facebook, Instagram, Twitter, LinkedIn, TikTok.",
+      actions: [
+        { label: "Berapa biayanya?", value: "pricing" },
+        { label: "Frekuensi posting", value: "frequency" },
+        { label: "Contoh hasil", value: "portfolio" }
+      ]
+    },
+    content: {
+      text: "Content marketing meliputi:\n\n• Artikel blog SEO-friendly\n• Infografis dan visual content\n• Video pendek & explainer\n• Email newsletter\n• Case studies\n• Ebooks & whitepapers\n\nSemua konten dibuat sesuai branding dan target audience Anda.",
+      actions: [
+        { label: "Berapa biayanya?", value: "pricing" },
+        { label: "Proses pembuatan", value: "process" },
+        { label: "Contoh konten", value: "portfolio" }
+      ]
+    },
+    ads: {
+      text: "Layanan iklan online mencakup:\n\n• Google Ads (Search, Display, YouTube)\n• Facebook & Instagram Ads\n• LinkedIn Ads\n• TikTok Ads\n\nMulai dari pembuatan strategi, desain kreatif, pengaturan targeting, optimasi, hingga pelaporan hasil.",
+      actions: [
+        { label: "Berapa biayanya?", value: "pricing" },
+        { label: "Minimum budget", value: "min_budget" },
+        { label: "Case studies", value: "portfolio" }
+      ]
+    },
+    process: {
+      text: "Proses kerja saya terdiri dari 5 tahap:\n\n1. Konsultasi & analisis kebutuhan\n2. Penyusunan strategi & proposal\n3. Implementasi solusi\n4. Monitoring & optimasi\n5. Laporan hasil & evaluasi\n\nSetiap project dimulai dengan meeting kickoff untuk memastikan ekspektasi dan target yang jelas.",
+      actions: [
+        { label: "Berapa lama prosesnya?", value: "timeline" },
+        { label: "Apa yang dibutuhkan?", value: "requirements" },
+        { label: "Mulai konsultasi", value: "contact" }
+      ]
+    },
+    pricing: {
+      text: "Biaya layanan bervariasi tergantung kebutuhan dan skala bisnis Anda. Untuk mendapatkan penawaran yang sesuai, diperlukan konsultasi singkat untuk memahami kebutuhan spesifik Anda.\n\nSilakan hubungi via WhatsApp atau Email untuk diskusi lebih lanjut.",
+      actions: [
+        { label: "Kontak WhatsApp", value: "whatsapp" },
+        { label: "Kirim Email", value: "email" },
+        { label: "Facebook", value: "facebook" }
+      ]
+    },
+    portfolio: {
+      text: "Anda dapat melihat beberapa hasil kerja saya di section Projects pada halaman ini. Untuk case studies dan portfolio yang lebih detail, silakan hubungi saya langsung untuk mendapatkan presentasi khusus sesuai industri Anda.",
+      actions: [
+        { label: "Lihat Projects", value: "goto_projects" },
+        { label: "Kontak langsung", value: "contact" }
+      ]
+    },
+    contact: {
+      text: "Anda dapat menghubungi saya melalui:\n\n• Email: singranksg@gmail.com\n• WhatsApp: +62 823 7766 0027\n• Facebook: Khuzayfah.by.redo\n\nSaya akan membalas dalam waktu 24 jam kerja.",
+      actions: [
+        { label: "WhatsApp", value: "whatsapp" },
+        { label: "Email", value: "email" },
+        { label: "Facebook", value: "facebook" }
+      ]
+    },
+    whatsapp: {
+      text: "Anda akan diarahkan ke WhatsApp saya untuk melanjutkan diskusi. Silakan klik link berikut: https://wa.me/6282377660027",
+      actions: [
+        { label: "Kembali ke menu", value: "default" }
+      ]
+    },
+    email: {
+      text: "Anda dapat mengirim email ke singranksg@gmail.com atau klik link berikut untuk membuka aplikasi email Anda: mailto:singranksg@gmail.com",
+      actions: [
+        { label: "Kembali ke menu", value: "default" }
+      ]
+    },
+    facebook: {
+      text: "Anda dapat menghubungi saya melalui Facebook: https://www.facebook.com/Khuzayfah.by.redo",
+      actions: [
+        { label: "Kembali ke menu", value: "default" }
+      ]
+    },
+    goto_projects: {
+      text: "Silakan scroll ke bagian Projects untuk melihat beberapa karya saya, atau klik link navigation Projects di atas.",
+      actions: [
+        { label: "Kembali ke menu", value: "default" }
+      ]
+    },
+    about: {
+      text: "Saya adalah seorang spesialis SEO dan Digital Marketing dengan pengalaman membantu berbagai bisnis meningkatkan visibilitas online dan konversi. Saya berfokus pada strategi yang berkelanjutan dan hasil yang terukur.",
+      actions: [
+        { label: "Layanan", value: "services" },
+        { label: "Bagaimana saya bekerja", value: "process" },
+        { label: "Kontak", value: "contact" }
+      ]
+    },
+    frequency: {
+      text: "Frekuensi posting sosial media biasanya adalah:\n\n• Facebook: 3-5x per minggu\n• Instagram: 3-7x per minggu (termasuk stories)\n• Twitter: 5-7x per minggu\n• LinkedIn: 2-3x per minggu\n• TikTok: 3-5x per minggu\n\nFrekuensi ini bisa disesuaikan dengan kebutuhan dan budget Anda.",
+      actions: [
+        { label: "Jenis konten", value: "content" },
+        { label: "Harga paket", value: "pricing" }
+      ]
+    },
+    timeline: {
+      text: "Timeline untuk setiap layanan:\n\n• SEO: Hasil awal 3-6 bulan, kontrak minimal 6 bulan\n• Sosial Media: Kontrak 3-12 bulan\n• Content Marketing: 2-4 minggu untuk strategi awal, lalu ongoing\n• Iklan Online: 1-2 minggu setup, minimal 3 bulan untuk optimasi",
+      actions: [
+        { label: "Proses kerja", value: "process" },
+        { label: "Kontak untuk diskusi", value: "contact" }
+      ]
+    },
+    requirements: {
+      text: "Hal yang biasanya dibutuhkan untuk memulai project:\n\n• Brief bisnis dan tujuan marketing\n• Akses ke website/akun sosial media (jika ada)\n• Brand guidelines (jika ada)\n• Konten/materi yang sudah ada\n• Budget dan timeline\n\nSaya akan membantu jika Anda belum memiliki sebagian dari dokumen ini.",
+      actions: [
+        { label: "Mulai konsultasi", value: "contact" },
+        { label: "Proses kerja", value: "process" }
+      ]
+    },
+    min_budget: {
+      text: "Budget minimal untuk kampanye iklan online:\n\n• Google Search Ads: Rp 3 juta/bulan\n• Facebook/Instagram Ads: Rp 2 juta/bulan\n• LinkedIn Ads: Rp 5 juta/bulan\n• TikTok Ads: Rp 2 juta/bulan\n\nBiaya di atas belum termasuk fee management yang biasanya 15-20% dari budget iklan atau minimal Rp 1,5 juta/bulan.",
+      actions: [
+        { label: "Detail layanan iklan", value: "ads" },
+        { label: "Kontak untuk penawaran", value: "contact" }
+      ]
+    },
+    unknown: {
+      text: "Maaf, saya belum memahami pertanyaan Anda. Silakan pilih salah satu topik berikut atau ketik pertanyaan Anda dengan cara yang berbeda.",
+      actions: [
+        { label: "Layanan", value: "services" },
+        { label: "Proses kerja", value: "process" },
+        { label: "Harga", value: "pricing" },
+        { label: "Kontak", value: "contact" }
+      ]
+    }
+  };
+
+  // Daftar kata kunci untuk mencocokkan pertanyaan pengguna
+  const keywordMap: Record<string, string[]> = {
+    services: ["layanan", "jasa", "service", "product", "produk", "tawarkan", "apa yang", "offer"],
+    seo: ["seo", "search engine", "google", "ranking", "peringkat", "keyword", "kata kunci"],
+    social: ["sosial", "social media", "instagram", "facebook", "twitter", "tiktok", "linkedin", "medsos"],
+    content: ["konten", "content", "artikel", "blog", "tulisan", "video", "infografis", "newsletter"],
+    ads: ["iklan", "ads", "advertising", "google ads", "facebook ads", "instagram ads", "tiktok ads", "promote", "promosi"],
+    process: ["proses", "process", "cara kerja", "tahapan", "langkah", "metode", "method", "bagaimana"],
+    pricing: ["harga", "biaya", "price", "pricing", "cost", "paket", "package", "bayar", "budget", "pay"],
+    portfolio: ["portfolio", "hasil", "result", "karya", "project", "kerja", "testimoni", "klien", "client"],
+    contact: ["kontak", "contact", "hubungi", "reach", "email", "whatsapp", "wa", "telepon", "phone", "tanya"],
+    about: ["tentang", "about", "profil", "profile", "siapa", "who", "pengalaman", "experience"],
+    greeting: ["halo", "hai", "hi", "hello", "hey", "selamat", "good"]
+  };
+
+  // Fungsi untuk mendapatkan respons berdasarkan input teks
+  function getResponseByText(text: string): string {
+    const lowercaseText = text.toLowerCase();
+    
+    // Cek apakah ada kata kunci yang cocok
+    for (const [responseKey, keywords] of Object.entries(keywordMap)) {
+      for (const keyword of keywords) {
+        if (lowercaseText.includes(keyword)) {
+          return responseKey;
+        }
+      }
+    }
+    
+    // Jika tidak ada yang cocok, kembalikan 'unknown'
+    return "unknown";
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Check if mobile
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    
+    // Elements
+    const chatbotToggle = document.querySelector('.terminal-chatbot-toggle') as HTMLButtonElement;
+    const chatbot = document.querySelector('.terminal-chatbot') as HTMLDivElement;
+    const chatbotHeader = document.querySelector('.terminal-chatbot-header') as HTMLDivElement;
+    const messagesContainer = document.querySelector('.terminal-chatbot-messages') as HTMLDivElement;
+    const actionsContainer = document.querySelector('.terminal-chatbot-actions') as HTMLDivElement;
+    const inputField = document.querySelector('.terminal-chatbot-input-field') as HTMLInputElement;
+    const sendButton = document.querySelector('.terminal-chatbot-send') as HTMLButtonElement;
+    
+    // Function to scroll to bottom of messages
+    function scrollToBottom() {
+      setTimeout(() => {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }, 10);
+    }
+    
+    // Send bot response based on response key
+    function sendBotResponse(responseKey: string) {
+      // Default to unknown if response key not found
+      const response = chatbotResponses[responseKey] || chatbotResponses.unknown;
+      
+      // Add bot message
+      addMessage('bot', response.text);
+      
+      // Clear and add new action buttons
+      actionsContainer.innerHTML = '';
+      
+      if (response.actions && response.actions.length > 0) {
+        response.actions.forEach(action => {
+          const actionButton = document.createElement('button');
+          actionButton.className = 'terminal-chatbot-action';
+          actionButton.textContent = action.label;
+          actionButton.addEventListener('click', () => handleActionClick(action.value));
+          actionsContainer.appendChild(actionButton);
+        });
+      }
+    }
+    
+    // Add fullscreen toggle button to header
+    if (isMobile) {
+      const fullscreenToggle = document.createElement('button');
+      fullscreenToggle.className = 'terminal-fullscreen-toggle';
+      fullscreenToggle.innerHTML = '<svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z"/></svg>';
+      chatbotHeader.appendChild(fullscreenToggle);
+      
+      // Toggle fullscreen mode
+      fullscreenToggle.addEventListener('click', () => {
+        chatbot.classList.toggle('fullscreen');
+        scrollToBottom();
+      });
+      
+      // Handle virtual keyboard
+      inputField.addEventListener('focus', () => {
+        if (isMobile) {
+          setTimeout(() => {
+            chatbot.classList.add('keyboard-visible');
+            scrollToBottom();
+          }, 300);
+        }
+      });
+      
+      inputField.addEventListener('blur', () => {
+        if (isMobile) {
+          setTimeout(() => {
+            chatbot.classList.remove('keyboard-visible');
+          }, 100);
+        }
+      });
+    }
+    
+    // Store chat history
+    const chatHistory: ChatMessage[] = [];
+    
+    // Toggle chatbot visibility
+    chatbotToggle.addEventListener('click', () => {
+      const isActive = chatbot.classList.toggle('active');
+      chatbotToggle.classList.toggle('active', isActive);
+      
+      if (isActive && chatHistory.length === 0) {
+        // Send welcome message when opened for first time
+        sendBotResponse("default");
+      }
+      
+      if (isActive) {
+        inputField.focus();
+      }
+    });
+    
+    // Handle user input submission
+    function handleUserInput() {
+      const userText = inputField.value.trim();
+      if (!userText) return;
+      
+      // Add user message to chat
+      addMessage('user', userText);
+      inputField.value = '';
+      
+      // Get response key based on user text
+      const responseKey = getResponseByText(userText);
+      
+      // Slight delay to simulate processing
+      setTimeout(() => {
+        sendBotResponse(responseKey);
+      }, 500);
+      
+      // On mobile, keep focus on input after sending
+      if (isMobile) {
+        setTimeout(() => {
+          inputField.focus();
+        }, 50);
+      }
+    }
+    
+    // Send button click event
+    sendButton.addEventListener('click', handleUserInput);
+    
+    // Input field enter key event
+    inputField.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleUserInput();
+      }
+    });
+    
+    // Handle action button clicks
+    function handleActionClick(actionValue: string) {
+      sendBotResponse(actionValue);
+      
+      // Special actions handling
+      if (actionValue === 'whatsapp') {
+        setTimeout(() => {
+          window.open('https://wa.me/6282377660027', '_blank');
+        }, 1000);
+      } else if (actionValue === 'email') {
+        setTimeout(() => {
+          window.location.href = 'mailto:singranksg@gmail.com';
+        }, 1000);
+      } else if (actionValue === 'facebook') {
+        setTimeout(() => {
+          window.open('https://www.facebook.com/Khuzayfah.by.redo', '_blank');
+        }, 1000);
+      } else if (actionValue === 'goto_projects') {
+        setTimeout(() => {
+          document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+          chatbot.classList.remove('active');
+          chatbotToggle.classList.remove('active');
+        }, 1000);
+      }
+    }
+    
+    // Add message to chat UI
+    function addMessage(sender: 'bot' | 'user', text: string) {
+      const message: ChatMessage = {
+        sender,
+        text,
+        timestamp: Date.now()
+      };
+      
+      chatHistory.push(message);
+      
+      // Create message element
+      const messageEl = document.createElement('div');
+      messageEl.className = `terminal-chatbot-message ${sender}`;
+      
+      const textEl = document.createElement('div');
+      textEl.className = 'terminal-chatbot-message-text';
+      textEl.textContent = text;
+      
+      const timeEl = document.createElement('div');
+      timeEl.className = 'terminal-chatbot-message-time';
+      const time = new Date(message.timestamp);
+      timeEl.textContent = `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`;
+      
+      messageEl.appendChild(textEl);
+      messageEl.appendChild(timeEl);
+      messagesContainer.appendChild(messageEl);
+      
+      // Scroll to bottom
+      scrollToBottom();
+    }
+    
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      if (chatbot.classList.contains('active')) {
+        scrollToBottom();
+      }
+    });
+    
+    // Add vibration feedback on mobile 
+    if (isMobile && 'vibrate' in navigator) {
+      sendButton.addEventListener('click', () => {
+        navigator.vibrate(30); // short vibration
+      });
+      
+      document.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).classList.contains('terminal-chatbot-action')) {
+          navigator.vibrate(30);
+        }
+      });
+    }
+  });
+</script> 
