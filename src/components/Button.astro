@@ -1,15 +1,73 @@
 ---
 interface Props {
   rounded?: boolean;
+  variant?: "primary" | "secondary" | "outline";
+  className?: string;
 }
 
-const { rounded } = Astro.props;
+const { rounded, variant = "primary", className = "" } = Astro.props;
+
+const getVariantClasses = (variant: string) => {
+  switch(variant) {
+    case "primary":
+      return "bg-gradient-to-r from-red-600 to-red-500 text-white hover:from-red-700 hover:to-red-600 border-transparent shadow-md shadow-red-900/20";
+    case "secondary":
+      return "bg-gradient-to-r from-white/90 to-gray-100/90 text-black hover:from-white hover:to-gray-200 border-transparent shadow-md shadow-white/10";
+    case "outline":
+      return "bg-transparent backdrop-blur-sm text-white border-red-500/30 hover:border-red-500/70 hover:text-red-400 shadow-sm";
+    default:
+      return "bg-gradient-to-r from-red-600 to-red-500 text-white hover:from-red-700 hover:to-red-600 border-transparent shadow-md shadow-red-900/20";
+  }
+};
+
+const variantClass = getVariantClasses(variant);
 ---
 
 <button
-  class={`custom-btn text-xl max-h-[50px] shadow-custom shadow-primary-500 active:shadow-none active:translate-x-[3px] active:translate-y-[3px] text-gray-200 px-5 py-2 border border-primary-500 hover:text-primary-500 transition-colors duration-100 ease-in-out bg-gray-900 cursor-pointer ${
+  class={`digital-btn font-medium text-sm md:text-base max-h-[50px] transform hover:scale-[1.03] active:scale-[0.98] active:shadow-inner transition-all duration-200 px-4 py-2 border ${variantClass} ease-out cursor-pointer ${
     rounded ? "rounded-full" : "rounded-lg"
-  }`}
+  } ${className}`}
 >
   <slot />
 </button>
+
+<style>
+  .digital-btn {
+    font-family: var(--font-sans);
+    letter-spacing: -0.01em;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .digital-btn::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--color-primary), transparent, var(--color-secondary), transparent, var(--color-primary));
+    background-size: 400%;
+    z-index: -1;
+    animation: digital-border 10s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+  }
+  
+  .digital-btn:hover::before {
+    opacity: 1;
+  }
+  
+  @keyframes digital-border {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+</style>

@@ -1,10 +1,10 @@
 export const LINKS = {
   github: "https://github.com/Ladvace",
-  linkedin: "https://www.linkedin.com/in/gianmarco-cavallo/",
-  medium: "https://ladvace.medium.com/",
-  discord: "https://discordapp.com/users/163300027618295808",
-  dribble: "https://dribbble.com/Ladvace_Jace",
-  email: "contact@gianmarcocavallo.com<",
+  linkedin: "https://www.linkedin.com/in/khuzayfah-redo/",
+  facebook: "https://www.facebook.com/Khuzayfah.by.redo/",
+  whatsapp: "https://api.whatsapp.com/send?phone=+1234567890", // Replace +1234567890 with actual phone number
+  website: "https://singrank.com",
+  email: "singrank.sg@gmail.com",
 };
 
 export const loaderAnimation = [

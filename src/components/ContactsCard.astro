@@ -1,36 +1,205 @@
 ---
 import Card from "./Card/index.astro";
-import { LINKS } from "../lib/constants";
+import { Icon } from 'astro-icon/components';
+
+const LINKS = {
+  email: "khuzayfah.redo@gmail.com",
+  linkedin: "https://linkedin.com/in/khuzayfah-redo",
+  whatsapp: "https://wa.me/65XXXXXXXX", // Replace with actual WhatsApp number
+  portfolio: "https://khuzayfahredo.com" // Replace with actual personal portfolio site if available
+};
 ---
 
-<Card colSpan="md:col-span-1" rowSpan="md:row-span-4">
-  <div class="h-full">
-    <header class="flex items-center">
-      <h1 class="text-white text-xl font-bold">
-        Let's start working together!
-      </h1>
-    </header>
-    <address class="flex flex-col mt-4">
-      <h2 class="text-gray-500">Contact Details</h2>
-      <p>contact@gianmarcocavallo.com</p>
-      <p>Italy</p>
-    </address>
-    <div class="flex flex-col mt-4 w-fit">
-      <h2 class="text-gray-500">Socials</h2>
-      <ul>
-        <li>
-          <a href={LINKS.linkedin} target="_blank">Linkedin</a>
-        </li>
-        <li>
-          <a href={LINKS.github} target="_blank">Github</a>
-        </li>
-        <li>
-          <a href={LINKS.medium} target="_blank">Medium</a>
-        </li>
-        <li>
-          <a href={LINKS.discord} target="_blank">Discord</a>
-        </li>
-      </ul>
+<Card colSpan="lg:col-span-2" rowSpan="md:row-span-1">
+  <div class="flex flex-col h-full">
+    <h1 class="text-lg sm:text-xl font-bold flex items-center mb-4">
+      <div class="tech-icon-container">
+        <Icon name="ri:contacts-fill" class="h-6 w-6 sm:h-7 sm:w-7 text-red-500" />
+      </div>
+      <span class="text-gradient ml-2">Connect With Me</span>
+    </h1>
+    <div class="digital-contacts-container">
+      <a 
+        href={LINKS.linkedin} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="digital-contact-item"
+      >
+        <div class="contact-icon">
+          <Icon name="ri:linkedin-box-fill" class="h-5 w-5 text-red-500" />
+        </div>
+        <span class="contact-text">LinkedIn Profile</span>
+        <div class="contact-arrow">
+          <Icon name="ri:arrow-right-s-line" class="h-4 w-4 text-gray-400" />
+        </div>
+      </a>
+      
+      <a 
+        href={LINKS.whatsapp} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="digital-contact-item"
+      >
+        <div class="contact-icon">
+          <Icon name="ri:whatsapp-fill" class="h-5 w-5 text-red-500" />
+        </div>
+        <span class="contact-text">WhatsApp</span>
+        <div class="contact-arrow">
+          <Icon name="ri:arrow-right-s-line" class="h-4 w-4 text-gray-400" />
+        </div>
+      </a>
+      
+      <a 
+        href={`mailto:${LINKS.email}`} 
+        class="digital-contact-item"
+      >
+        <div class="contact-icon">
+          <Icon name="ri:mail-fill" class="h-5 w-5 text-red-500" />
+        </div>
+        <span class="contact-text">Email Me</span>
+        <div class="contact-arrow">
+          <Icon name="ri:arrow-right-s-line" class="h-4 w-4 text-gray-400" />
+        </div>
+      </a>
+      
+      <a 
+        href="https://singrank.com" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="digital-contact-item"
+      >
+        <div class="contact-icon">
+          <Icon name="ri:building-fill" class="h-5 w-5 text-red-500" />
+        </div>
+        <span class="contact-text">My Company: SingRank</span>
+        <div class="contact-arrow">
+          <Icon name="ri:arrow-right-s-line" class="h-4 w-4 text-gray-400" />
+        </div>
+      </a>
     </div>
   </div>
 </Card>
+
+<style>
+  .digital-contacts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+  }
+  
+  .digital-contact-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(229, 62, 62, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .digital-contact-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background-color: rgba(229, 62, 62, 0.5);
+    transition: transform 0.3s ease;
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+  
+  .digital-contact-item:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-color: rgba(229, 62, 62, 0.3);
+    transform: translateX(5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .digital-contact-item:hover::before {
+    transform: scaleY(1);
+  }
+  
+  .contact-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-right: 12px;
+    border: 1px solid rgba(229, 62, 62, 0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .contact-icon::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .contact-text {
+    flex: 1;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+  
+  .contact-arrow {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+  }
+  
+  .digital-contact-item:hover .contact-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .tech-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(229, 62, 62, 0.3);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .tech-icon-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(229, 62, 62, 0.1), transparent);
+    animation: shine 3s infinite;
+  }
+  
+  @keyframes shine {
+    0% {
+      transform: translateX(-100%) translateY(-100%);
+    }
+    50% {
+      transform: translateX(100%) translateY(100%);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%);
+      opacity: 0;
+    }
+  }
+</style>

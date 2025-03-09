@@ -1,33 +1,220 @@
 ---
 import Card from "./Card/index.astro";
+import { Icon } from 'astro-icon/components';
 ---
 
-<Card colSpan="md:col-span-1" rowSpan="md:row-span-6" title="About me">
-  <div class="flex flex-col gap-2">
-    <div class="text-sm font-light">
-      <p>
-        Hi, I'm Gianmarco, a front-end software developer from Italy.
-        <br />
-        My primary tools of choice includes:
-      </p>
-      <ul class="list-disc list-inside">
-        <li>JavaScript</li>
-        <li>React</li>
-        <li>Solidjs</li>
-        <li>Astro</li>
-        <li>svelte</li>
-        <li>Nodejs</li>
-      </ul>
+<Card colSpan="md:col-span-3" rowSpan="md:row-span-2" variant="gradient">
+  <div class="flex w-full h-full">
+    <div class="flex flex-col justify-between md:max-w-[700px] gap-3 sm:gap-5">
+      <div class="flex flex-col gap-2 sm:gap-3">
+        <h1 class="text-lg sm:text-xl font-bold flex items-center">
+          <div class="tech-icon-container">
+            <Icon name="ri:user-3-fill" class="h-6 w-6 sm:h-7 sm:w-7 text-red-500" />
+          </div>
+          <span class="text-gradient ml-2">My Background</span>
+        </h1>
+        <p class="text-sm sm:text-base leading-relaxed text-gray-100">
+          I graduated with a degree in Software Engineering from Polytechnic, which provided me with a strong technical foundation. My passion for continuous learning led me to obtain specialized certifications in RedHat technologies, Python programming, Data Science, and most recently AI development.
+        </p>
+        <p class="text-sm sm:text-base leading-relaxed text-gray-100 mt-2">
+          My professional journey began in 2010 as a journalist and marketing specialist, which helped me develop strong communication skills. I later transitioned to digital marketing, leveraging my technical background to bring a unique perspective to SEO strategies. Since 2021, I've been exploring AI technologies from prompt engineering to model training, which I now integrate into my marketing approaches. In recent years, I founded SingRank, where I apply my diverse skill set to help businesses in Singapore and internationally.
+        </p>
+      </div>
+      <div>
+        <h3 class="text-sm sm:text-base font-semibold mb-3 sm:mb-4 flex items-center">
+          <div class="tech-icon-container">
+            <Icon name="ri:tools-fill" class="h-5 w-5 sm:h-6 sm:w-6 text-red-500" />
+          </div>
+          <span class="text-gradient ml-2">Personal Skills & Expertise</span>
+        </h3>
+        <div class="grid grid-cols-2 gap-3 sm:gap-4">
+          <div class="tech-skill-group">
+            <h4 class="text-xs sm:text-sm font-medium mb-3 text-white/90 tech-group-title">Digital Marketing</h4>
+            <ul class="space-y-2">
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:search-eye-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>SEO & AEO Strategy</span>
+              </li>
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:line-chart-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>Digital Marketing Consulting</span>
+              </li>
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:building-4-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>Business Leadership</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="tech-skill-group">
+            <h4 class="text-xs sm:text-sm font-medium mb-3 text-white/90 tech-group-title">AI & Technology</h4>
+            <ul class="space-y-2">
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:brain-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>AI Prompt Engineering</span>
+              </li>
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:code-s-slash-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>Model Training & Deployment</span>
+              </li>
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:code-box-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>Python & Data Science</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="tech-skill-group">
+            <h4 class="text-xs sm:text-sm font-medium mb-3 text-white/90 tech-group-title">Education & Certifications</h4>
+            <ul class="space-y-2">
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:graduation-cap-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>Software Engineering Degree</span>
+              </li>
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:medal-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>RedHat Certification</span>
+              </li>
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:award-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>Data Science & AI Training</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="tech-skill-group">
+            <h4 class="text-xs sm:text-sm font-medium mb-3 text-white/90 tech-group-title">Communication & Strategy</h4>
+            <ul class="space-y-2">
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:article-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>Journalism & Content Creation</span>
+              </li>
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:global-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>International Business</span>
+              </li>
+              <li class="flex items-center text-xs sm:text-sm">
+                <div class="tech-skill-icon">
+                  <Icon name="ri:lightbulb-fill" class="h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                </div>
+                <span>Strategic Problem Solving</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
-    <p class="text-sm font-light">
-      Beyond coding, I'm passionate about design, illustration, animation and 3D modelling and traveling.
-      An unusual hobby of mine is collecting vintage passports, they're
-      interesting pieces of history to me.
-    </p>
-    <p class="text-sm font-light">
-      While I have some preferred tools, I always choose the best one for the
-      job, even if it's not on my usual list. My goal is to find the right
-      solution for each project.
-    </p>
   </div>
 </Card>
+
+<style>
+.tech-skill-group {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 2px solid rgba(229, 62, 62, 0.4);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-skill-group::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(229, 62, 62, 0.3), transparent);
+}
+
+.tech-group-title {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+}
+
+.tech-group-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  height: 1px;
+  background-color: rgba(229, 62, 62, 0.5);
+}
+
+.tech-skill-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(229, 62, 62, 0.2);
+  border-radius: 6px;
+  margin-right: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tech-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(229, 62, 62, 0.3);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-icon-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(229, 62, 62, 0.1), transparent);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%);
+  }
+  50% {
+    transform: translateX(100%) translateY(100%);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%);
+    opacity: 0;
+  }
+}
+</style>

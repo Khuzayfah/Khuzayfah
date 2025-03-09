@@ -1,0 +1,191 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title = "Digital Terminal Portfolio",
+  description = "A showcase of my skills, projects, and professional experience in SEO, digital marketing, and technology.",
+  ogImage = "/ogimage.png",
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogImage} />
+    
+    <!-- Theme Color for browsers -->
+    <meta name="theme-color" content="#121212" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Log layout initialization -->
+    <script>
+      console.log('BaseLayout initialized', {
+        title: "{title}",
+        pathname: "{Astro.url.pathname}",
+        timestamp: new Date().toISOString()
+      });
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <slot />
+    </div>
+    
+    <!-- Log render complete -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('Page render complete', {
+          timestamp: new Date().toISOString(),
+          viewport: {
+            width: window.innerWidth,
+            height: window.innerHeight
+          }
+        });
+        
+        // Log window resizes for responsive testing
+        window.addEventListener('resize', () => {
+          console.log('Window resized', {
+            width: window.innerWidth,
+            height: window.innerHeight,
+            timestamp: new Date().toISOString()
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Inter', sans-serif;
+    
+    --color-background: #0c0c0e;
+    --color-terminal: #121214;
+    --color-text: #e6edf3;
+    --color-text-secondary: #8b949e;
+    --color-primary: rgb(229, 62, 62);
+    --color-primary-dark: rgb(153, 27, 27);
+    --color-primary-alpha: rgba(229, 62, 62, 0.3);
+    --color-border: rgba(48, 54, 61, 0.6);
+    --color-border-light: rgba(48, 54, 61, 0.2);
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  html, body {
+    height: 100%;
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    position: relative;
+    background-image: 
+      radial-gradient(rgba(229, 62, 62, 0.02) 1px, transparent 1px),
+      radial-gradient(rgba(229, 62, 62, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    background-position: 0 0, 25px 25px;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #app {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  
+  code, pre, .mono {
+    font-family: var(--font-mono);
+  }
+  
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  a:hover {
+    color: var(--color-text);
+  }
+  
+  /* Media queries for responsive design */
+  @media (max-width: 768px) {
+    body {
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
+    }
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-primary-alpha);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+  }
+  
+  /* Selection color */
+  ::selection {
+    background-color: var(--color-primary-alpha);
+    color: var(--color-text);
+  }
+</style> 

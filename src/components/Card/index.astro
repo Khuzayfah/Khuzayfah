@@ -11,25 +11,57 @@ interface Props {
   colorText?: string;
   height?: string;
   width?: string;
+  variant?: "default" | "gradient" | "glass";
 }
 
-const { title, body, colSpan, rowSpan, href, colorText, height } = Astro.props;
+const { 
+  title, 
+  body, 
+  colSpan, 
+  rowSpan, 
+  href, 
+  colorText, 
+  height,
+  variant = "default" 
+} = Astro.props;
+
+const getVariantClasses = (variant: string) => {
+  switch(variant) {
+    case "gradient":
+      return "terminal-card-gradient";
+    case "glass":
+      return "terminal-card-glass";
+    default:
+      return "terminal-card-default";
+  }
+};
+
+const variantClass = getVariantClasses(variant);
 ---
 
 <div
-  class={`card flex flex-col h-max sm:h-auto group overflow-hidden transform-y-[-40%] bg-darkslate-500 shadow-lg rounded-lg p-6 border border-darkslate-100 hover:border-primary-500 align-start flex-none ${
-    height || "h-full"
-  } justify-start relative transform perspective-1200 w-full transition duration-75 ease-in-out col-span-1 ${
-    colSpan || "md:col-span-2"
-  } ${rowSpan || ""}`}
+  class={`terminal-card ${variantClass} ${height || "h-full"} ${colSpan || ""} ${rowSpan || ""}`}
 >
+  <div class="terminal-card-glitch"></div>
+  
+  <div class="terminal-card-frame">
+    <div class="terminal-card-corner top-left"></div>
+    <div class="terminal-card-corner top-right"></div>
+    <div class="terminal-card-corner bottom-left"></div>
+    <div class="terminal-card-corner bottom-right"></div>
+  </div>
+  
+  <div class="terminal-card-glow"></div>
+  
   {
     href ? (
-      <a href={href} class={`h-full w-full ${colorText || ""}`}>
-        <Icon
-          name="ri:arrow-right-up-line"
-          class="h-6 float-right group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100 z-20"
-        />
+      <a href={href} class={`terminal-card-link ${colorText || ""}`}>
+        <div class="terminal-card-icon">
+          <Icon
+            name="ri:arrow-right-up-line"
+            class="h-5 w-5"
+          />
+        </div>
         <Content title={title} body={body}>
           <slot />
         </Content>
@@ -41,3 +73,213 @@ const { title, body, colSpan, rowSpan, href, colorText, height } = Astro.props;
     )
   }
 </div>
+
+<style>
+  /* Base Card Styles */
+  .terminal-card {
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(18, 18, 18, 0.8);
+    border: 1px solid rgba(48, 54, 61, 0.4);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    z-index: 1;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  .terminal-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(229, 62, 62, 0.3);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 15px rgba(229, 62, 62, 0.1);
+  }
+  
+  @media (min-width: 1024px) {
+    .terminal-card {
+      padding: 1.75rem;
+      border-radius: 1rem;
+    }
+  }
+  
+  /* Card Frame Effect */
+  .terminal-card-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+  }
+  
+  .terminal-card-corner {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-color: rgba(229, 62, 62, 0.4);
+    transition: all 0.3s ease;
+  }
+  
+  .terminal-card:hover .terminal-card-corner {
+    border-color: rgba(229, 62, 62, 0.7);
+    width: 20px;
+    height: 20px;
+  }
+  
+  .terminal-card-corner.top-left {
+    top: 0;
+    left: 0;
+    border-top: 2px solid;
+    border-left: 2px solid;
+  }
+  
+  .terminal-card-corner.top-right {
+    top: 0;
+    right: 0;
+    border-top: 2px solid;
+    border-right: 2px solid;
+  }
+  
+  .terminal-card-corner.bottom-left {
+    bottom: 0;
+    left: 0;
+    border-bottom: 2px solid;
+    border-left: 2px solid;
+  }
+  
+  .terminal-card-corner.bottom-right {
+    bottom: 0;
+    right: 0;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+  }
+  
+  /* Card Glitch Effect */
+  .terminal-card-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 65%, rgba(229, 62, 62, 0.05) 70%, rgba(229, 62, 62, 0.05) 79%, transparent 80%);
+    background-size: 200% 200%;
+    animation: glitch-animation 8s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+    pointer-events: none;
+  }
+  
+  .terminal-card:hover .terminal-card-glitch {
+    opacity: 1;
+  }
+  
+  @keyframes glitch-animation {
+    0% { background-position: 0% 0%; }
+    20% { background-position: 40% 40%; }
+    40% { background-position: 60% 60%; }
+    60% { background-position: 40% 40%; }
+    80% { background-position: 20% 20%; }
+    100% { background-position: 0% 0%; }
+  }
+  
+  /* Glow Effect */
+  .terminal-card-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(229, 62, 62, 0.5), transparent);
+    transform-origin: left;
+    animation: scan-line 6s linear infinite;
+    opacity: 0.3;
+    z-index: 3;
+    pointer-events: none;
+  }
+  
+  .terminal-card:hover .terminal-card-glow {
+    opacity: 0.7;
+  }
+  
+  @keyframes scan-line {
+    0% {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+    5% {
+      opacity: 0.7;
+    }
+    20% {
+      transform: scaleX(1);
+      opacity: 0.7;
+    }
+    30% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+      transform: scaleX(1);
+    }
+  }
+  
+  /* Card Link */
+  .terminal-card-link {
+    display: block;
+    height: 100%;
+    width: 100%;
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+  }
+  
+  /* Card Icon */
+  .terminal-card-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(229, 62, 62, 0.5);
+    border-radius: 4px;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    z-index: 10;
+    transform: translate(8px, -8px);
+  }
+  
+  .terminal-card:hover .terminal-card-icon {
+    opacity: 1;
+    color: rgba(229, 62, 62, 1);
+    transform: translate(0, 0);
+  }
+  
+  /* Card Variants */
+  .terminal-card-gradient {
+    background: linear-gradient(145deg, rgba(30, 30, 30, 0.8), rgba(18, 18, 18, 0.8));
+    border-top-color: rgba(229, 62, 62, 0.2);
+  }
+  
+  .terminal-card-glass {
+    background-color: rgba(18, 18, 18, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .terminal-card-default {
+    background-color: rgba(18, 18, 18, 0.8);
+  }
+  
+  /* Additional Grid Layout Support */
+  @media (min-width: 768px) {
+    .terminal-card {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+</style>

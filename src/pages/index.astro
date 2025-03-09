@@ -1,107 +1,1329 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 import Card from "../components/Card/index.astro";
-import IntroCard from "../components/IntroCard.astro";
-import ContactsCard from "../components/ContactsCard.astro";
-import TimeZone from "../components/TimeZoneCard.astro";
-import AboutMe from "../components/AboutMe.astro";
-import Now from "../components/Now.astro";
-import Globe from "../components/Globe";
-import { getCollection } from "astro:content";
-import { formatDate } from "../lib/helpers";
+import { Icon } from "astro-icon/components";
+import Nav from "../components/Nav.astro";
 
-const posts = (await getCollection("blog"))?.sort(
-  (blogEntryA, blogEntryB) =>
-    (blogEntryB.data.pubDate || new Date()).getTime() -
-    (blogEntryA.data.pubDate || new Date()).getTime()
-);
+// Component Imports
+import CardHover from "../components/Card/CardHover.astro";
+
+// Import data
+import { services, skills, techBrands, quotes, bio, projects } from "../data";
 ---
 
+<BaseLayout>
+  <div class="terminal-window">
+    <!-- Terminal Header -->
+    <div class="terminal-header">
+      <div class="terminal-buttons">
+        <span class="terminal-button close"></span>
+        <span class="terminal-button minimize"></span>
+        <span class="terminal-button maximize"></span>
+      </div>
+      <div class="terminal-title">~/developer_portfolio</div>
+      <div class="terminal-actions">
+        <Icon name="ri:more-fill" class="w-5 h-5" />
+      </div>
+    </div>
+    
+    <!-- Terminal Content -->
+    <div class="terminal-content">
+      <div class="terminal-navbar">
+        <div class="terminal-prompt">
+          <span class="terminal-prompt-user">guest</span>
+          <span class="terminal-prompt-separator">@</span>
+          <span class="terminal-prompt-host">digital-portfolio</span>
+          <span class="terminal-prompt-path">:~$</span>
+          <span class="terminal-prompt-command">ls -la sections/</span>
+        </div>
+        <nav class="terminal-nav-links">
+          <a href="#about" class="terminal-nav-link">About</a>
+          <a href="#services" class="terminal-nav-link">Services</a>
+          <a href="#skills" class="terminal-nav-link">Skills</a>
+          <a href="#projects" class="terminal-nav-link">Projects</a>
+          <a href="#contact" class="terminal-nav-link">Contact</a>
+        </nav>
+      </div>
+      
+      <div class="terminal-output">
+        <div class="terminal-loading">
+          <div class="terminal-loading-bar"></div>
+          <span class="terminal-loading-text">Initializing portfolio components...</span>
+        </div>
+        
+        <!-- Main Content -->
+        <main class="terminal-main-grid">
+          <!-- About Section -->
+          <section id="about" class="terminal-section">
+            <div class="terminal-section-header">
+              <div class="terminal-prompt-mini">
+                <span class="terminal-prompt-user">guest</span>
+                <span class="terminal-prompt-separator">@</span>
+                <span class="terminal-prompt-host">digital-portfolio</span>
+                <span class="terminal-prompt-path">:~$</span>
+                <span class="terminal-prompt-command">cat about.md</span>
+              </div>
+            </div>
+            
+            <div class="terminal-section-content">
+              <Card
+                colSpan="md:col-span-2"
+                title="About Me"
+                body={bio}
+                variant="glass"
+              />
+            </div>
+          </section>
+          
+          <!-- Services Section -->
+          <section id="services" class="terminal-section">
+            <div class="terminal-section-header">
+              <div class="terminal-prompt-mini">
+                <span class="terminal-prompt-user">guest</span>
+                <span class="terminal-prompt-separator">@</span>
+                <span class="terminal-prompt-host">digital-portfolio</span>
+                <span class="terminal-prompt-path">:~$</span>
+                <span class="terminal-prompt-command">ls -la services/</span>
+              </div>
+              <div class="terminal-section-title">
+                <h2>Services</h2>
+                <div class="terminal-section-line"></div>
+              </div>
+            </div>
+            
+            <div class="terminal-section-content">
+              <div class="terminal-service-grid">
+                {
+                  services.map((service) => (
+                    <div class="terminal-service-item">
+                      <div class="terminal-service-icon">
+                        <Icon name={service.icon} />
+                      </div>
+                      <h3 class="terminal-service-title">{service.title}</h3>
+                      <p class="terminal-service-description">{service.description}</p>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+          </section>
+          
+          <!-- Skills Section -->
+          <section id="skills" class="terminal-section">
+            <div class="terminal-section-header">
+              <div class="terminal-prompt-mini">
+                <span class="terminal-prompt-user">guest</span>
+                <span class="terminal-prompt-separator">@</span>
+                <span class="terminal-prompt-host">digital-portfolio</span>
+                <span class="terminal-prompt-path">:~$</span>
+                <span class="terminal-prompt-command">ls -la skills/</span>
+              </div>
+              <div class="terminal-section-title">
+                <h2>Skills & Technologies</h2>
+                <div class="terminal-section-line"></div>
+              </div>
+            </div>
+            
+            <div class="terminal-section-content">
+              <div class="terminal-tech-grid">
+                {
+                  techBrands.map((brand, index) => (
+                    <div class="terminal-tech-item" style={`--animation-delay: ${index * 100}ms`}>
+                      <div class="terminal-tech-logo">
+                        <div class="terminal-tech-logo-glow"></div>
+                        <Icon name={brand.icon} />
+                      </div>
+                      <span class="terminal-tech-name">{brand.name}</span>
+                    </div>
+                  ))
+                }
+              </div>
+              
+              <div class="terminal-skills-grid">
+                {
+                  skills.map((category, categoryIndex) => (
+                    <div class="terminal-skill-category" style={`--animation-delay: ${categoryIndex * 150}ms`}>
+                      <h3 class="terminal-skill-category-title">{category.category}</h3>
+                      <ul class="terminal-skill-list">
+                        {category.skills.map((skill, skillIndex) => (
+                          <li class="terminal-skill-item" style={`--animation-delay: ${skillIndex * 50 + 200}ms`}>
+                            <span class="terminal-skill-bullet">></span>
+                            {skill}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+          </section>
+          
+          <!-- Projects Section -->
+          <section id="projects" class="terminal-section">
+            <div class="terminal-section-header">
+              <div class="terminal-prompt-mini">
+                <span class="terminal-prompt-user">guest</span>
+                <span class="terminal-prompt-separator">@</span>
+                <span class="terminal-prompt-host">digital-portfolio</span>
+                <span class="terminal-prompt-path">:~$</span>
+                <span class="terminal-prompt-command">ls -la projects/</span>
+              </div>
+              <div class="terminal-section-title">
+                <h2>Projects</h2>
+                <div class="terminal-section-line"></div>
+              </div>
+            </div>
+            
+            <div class="terminal-section-content">
+              <div class="terminal-projects-grid">
+                {
+                  projects.map((project) => (
+                    <Card
+                      colSpan={project.colSpan}
+                      title={project.title}
+                      body={project.body}
+                      href={project.href}
+                      variant={project.variant}
+                    />
+                  ))
+                }
+              </div>
+            </div>
+          </section>
+          
+          <!-- Quote Section -->
+          <section id="quote" class="terminal-section">
+            <div class="terminal-section-header">
+              <div class="terminal-prompt-mini">
+                <span class="terminal-prompt-user">guest</span>
+                <span class="terminal-prompt-separator">@</span>
+                <span class="terminal-prompt-host">digital-portfolio</span>
+                <span class="terminal-prompt-path">:~$</span>
+                <span class="terminal-prompt-command">cat quote.txt</span>
+              </div>
+            </div>
+            
+            <div class="terminal-section-content">
+              <div class="terminal-quote-container">
+                <div class="terminal-quote-icon">
+                  <Icon name="ri:double-quotes-l" />
+                </div>
+                <blockquote class="terminal-quote-text">
+                  {quotes[0].quote}
+                </blockquote>
+                <div class="terminal-quote-author">
+                  <span class="terminal-quote-author-name">{quotes[0].author}</span>
+                  <span class="terminal-quote-author-title">{quotes[0].title}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+          
+          <!-- Contact Section -->
+          <section id="contact" class="terminal-section">
+            <div class="terminal-section-header">
+              <div class="terminal-prompt-mini">
+                <span class="terminal-prompt-user">guest</span>
+                <span class="terminal-prompt-separator">@</span>
+                <span class="terminal-prompt-host">digital-portfolio</span>
+                <span class="terminal-prompt-path">:~$</span>
+                <span class="terminal-prompt-command">contact --show</span>
+              </div>
+              <div class="terminal-section-title">
+                <h2>Contact</h2>
+                <div class="terminal-section-line"></div>
+              </div>
+            </div>
+            
+            <div class="terminal-section-content">
+              <div class="terminal-contact-container">
+                <Card
+                  colSpan="md:col-span-2"
+                  title="Get In Touch"
+                  body="Hubungi saya melalui email, Facebook, atau WhatsApp untuk diskusi proyek SEO dan Digital Marketing."
+                  variant="glass"
+                >
+                  <div class="terminal-contact-links">
+                    <a href="mailto:singranksg@gmail.com" class="terminal-contact-link">
+                      <Icon name="ri:mail-line" />
+                      <span>Email</span>
+                    </a>
+                    <a href="https://www.facebook.com/Khuzayfah.by.redo" class="terminal-contact-link" target="_blank" rel="noopener noreferrer">
+                      <Icon name="ri:facebook-fill" />
+                      <span>Facebook</span>
+                    </a>
+                    <a href="https://wa.me/6282377660027" class="terminal-contact-link" target="_blank" rel="noopener noreferrer">
+                      <Icon name="ri:whatsapp-line" />
+                      <span>WhatsApp</span>
+                    </a>
+                  </div>
+                </Card>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    
+    <!-- Terminal Footer -->
+    <footer class="terminal-footer">
+      <div class="terminal-footer-prompt">
+        <span class="terminal-prompt-user">guest</span>
+        <span class="terminal-prompt-separator">@</span>
+        <span class="terminal-prompt-host">digital-portfolio</span>
+        <span class="terminal-prompt-path">:~$</span>
+        <span class="terminal-prompt-cursor"></span>
+      </div>
+      <div class="terminal-footer-info">
+        <span>© 2025 • Developed with Astro oleh Khuzayfah Redo</span>
+      </div>
+    </footer>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Terminal Window */
+  .terminal-window {
+    --terminal-bg: rgba(16, 16, 18, 0.97);
+    --terminal-header: #1a1a1c;
+    --terminal-text: #f0f0f0;
+    --terminal-accent: rgb(235, 68, 68);
+    --terminal-accent-alpha: rgba(235, 68, 68, 0.6);
+    --terminal-border: rgba(255, 255, 255, 0.12);
+    
+    max-width: 1300px;
+    margin: 1rem auto;
+    background-color: var(--terminal-bg);
+    border-radius: 10px;
+    border: 1px solid var(--terminal-border);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 2rem);
+  }
+  
+  @media (max-width: 768px) {
+    .terminal-window {
+      margin: 0;
+      height: 100vh;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+    }
+  }
+  
+  /* Terminal Header */
+  .terminal-header {
+    background-color: var(--terminal-header);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--terminal-border);
+  }
+  
+  .terminal-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .terminal-button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .terminal-button.close {
+    background-color: #ff5f56;
+  }
+  
+  .terminal-button.minimize {
+    background-color: #ffbd2e;
+  }
+  
+  .terminal-button.maximize {
+    background-color: #27c93f;
+  }
+  
+  .terminal-title {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--terminal-text);
+    opacity: 0.8;
+  }
+  
+  .terminal-actions {
+    color: var(--terminal-text);
+    opacity: 0.5;
+  }
+  
+  /* Terminal Content */
+  .terminal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    scroll-behavior: smooth;
+  }
+  
+  @media (max-width: 768px) {
+    .terminal-content {
+      padding: 1rem 0.75rem;
+    }
+  }
+  
+  /* Terminal Navbar */
+  .terminal-navbar {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--terminal-border);
+    padding-bottom: 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .terminal-navbar {
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+    }
+    
+    .terminal-prompt {
+      font-size: 0.8rem;
+    }
+    
+    .terminal-nav-links {
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+      display: flex;
+      flex-wrap: nowrap;
+    }
+    
+    .terminal-nav-link {
+      flex-shrink: 0;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+    }
+  }
+  
+  .terminal-prompt {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--terminal-text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .terminal-prompt-user {
+    color: #4CAF50;
+  }
+  
+  .terminal-prompt-separator {
+    color: var(--terminal-text);
+    margin: 0 0.25rem;
+  }
+  
+  .terminal-prompt-host {
+    color: #2196F3;
+  }
+  
+  .terminal-prompt-path {
+    color: var(--terminal-text);
+    margin-right: 0.5rem;
+  }
+  
+  .terminal-prompt-command {
+    color: var(--terminal-accent);
+  }
+  
+  .terminal-nav-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  
+  .terminal-nav-link {
+    font-family: monospace;
+    color: var(--terminal-text);
+    text-decoration: none;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--terminal-border);
+  }
+  
+  .terminal-nav-link:hover {
+    background-color: var(--terminal-accent-alpha);
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  /* Terminal Loading */
+  .terminal-loading {
+    margin-bottom: 1.5rem;
+  }
+  
+  .terminal-loading-bar {
+    height: 4px;
+    width: 50%;
+    background: linear-gradient(90deg, var(--terminal-accent) 0%, var(--terminal-accent-alpha) 70%, transparent 100%);
+    border-radius: 2px;
+    margin-bottom: 0.5rem;
+    animation: loading 2s ease-in-out forwards;
+  }
+  
+  @keyframes loading {
+    0% { width: 0%; opacity: 1; }
+    70% { width: 70%; opacity: 1; }
+    100% { width: 100%; opacity: 0.3; }
+  }
+  
+  .terminal-loading-text {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--terminal-text);
+    opacity: 0.7;
+  }
+  
+  /* Terminal Main Grid */
+  .terminal-main-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+  
+  /* Terminal Section */
+  .terminal-section {
+    margin-bottom: 2rem;
+  }
+  
+  .terminal-section-header {
+    margin-bottom: 1rem;
+  }
+  
+  .terminal-prompt-mini {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--terminal-text);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .terminal-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+  
+  .terminal-section-title h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--terminal-text);
+    margin: 0;
+  }
+  
+  .terminal-section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--terminal-accent-alpha), transparent);
+  }
+  
+  /* Service Grid */
+  .terminal-service-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.25rem;
+  }
+  
+  @media (min-width: 640px) {
+    .terminal-service-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .terminal-service-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+  }
+  
+  .terminal-service-item {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--terminal-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .terminal-service-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--terminal-accent-alpha);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .terminal-service-icon {
+    width: 3rem;
+    height: 3rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: var(--terminal-accent);
+    font-size: 1.5rem;
+    border: 1px solid var(--terminal-border);
+    transition: all 0.3s ease;
+  }
+  
+  .terminal-service-item:hover .terminal-service-icon {
+    background-color: var(--terminal-accent-alpha);
+    color: white;
+  }
+  
+  .terminal-service-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--terminal-text);
+    margin-bottom: 0.75rem;
+  }
+  
+  .terminal-service-description {
+    color: var(--terminal-text);
+    opacity: 0.7;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  /* Tech Grid */
+  .terminal-tech-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  @media (min-width: 640px) {
+    .terminal-tech-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .terminal-tech-grid {
+      grid-template-columns: repeat(8, 1fr);
+      gap: 0.75rem;
+    }
+  }
+  
+  .terminal-tech-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: fadeInUp 0.5s ease-out forwards;
+    animation-delay: var(--animation-delay, 0ms);
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .terminal-tech-logo {
+    position: relative;
+    width: 3rem;
+    height: 3rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    color: var(--terminal-text);
+    font-size: 1.5rem;
+    border: 1px solid var(--terminal-border);
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  
+  @media (min-width: 1024px) {
+    .terminal-tech-logo {
+      width: 2.75rem;
+      height: 2.75rem;
+      font-size: 1.25rem;
+    }
+  }
+  
+  .terminal-tech-logo-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, var(--terminal-accent-alpha) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .terminal-tech-item:hover .terminal-tech-logo-glow {
+    opacity: 0.3;
+  }
+  
+  .terminal-tech-name {
+    color: var(--terminal-text);
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+  
+  /* Skills Grid */
+  .terminal-skills-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .terminal-skills-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .terminal-skills-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+  }
+  
+  .terminal-skill-category {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--terminal-border);
+    border-radius: 8px;
+    padding: 1rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: var(--animation-delay, 0ms);
+    opacity: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .terminal-skills-grid {
+      gap: 0.75rem;
+    }
+    
+    .terminal-skill-category {
+      padding: 0.75rem;
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .terminal-skill-category-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--terminal-text);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--terminal-border);
+    display: flex;
+    align-items: center;
+  }
+  
+  .terminal-skill-category-title:before {
+    content: ">";
+    color: var(--terminal-accent);
+    margin-right: 0.5rem;
+    font-family: monospace;
+  }
+  
+  .terminal-skill-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .terminal-skill-item {
+    color: var(--terminal-text);
+    opacity: 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    font-family: monospace;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(48, 54, 61, 0.3);
+    animation: fadeInRight 0.3s ease-out forwards;
+    animation-delay: var(--animation-delay, 0ms);
+    transform: translateX(-10px);
+    transition: all 0.2s ease;
+  }
+  
+  .terminal-skill-item:hover {
+    background-color: rgba(229, 62, 62, 0.1);
+    border-color: rgba(229, 62, 62, 0.3);
+    transform: translateY(-2px);
+  }
+  
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 0.8;
+      transform: translateX(0);
+    }
+  }
+  
+  .terminal-skill-bullet {
+    color: var(--terminal-accent);
+    margin-right: 0.3rem;
+    font-size: 0.8rem;
+  }
+  
+  /* Projects Grid */
+  .terminal-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .terminal-projects-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1.25rem;
+    }
+  }
+  
+  /* Quote Container */
+  .terminal-quote-container {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--terminal-border);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .terminal-quote-icon {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: var(--terminal-accent-alpha);
+    font-size: 3rem;
+    opacity: 0.4;
+  }
+  
+  .terminal-quote-text {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: var(--terminal-text);
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+    position: relative;
+    z-index: 1;
+    font-style: italic;
+  }
+  
+  .terminal-quote-author {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .terminal-quote-author-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--terminal-text);
+  }
+  
+  .terminal-quote-author-title {
+    font-size: 0.85rem;
+    color: var(--terminal-text);
+    opacity: 0.7;
+  }
+  
+  /* Contact Container */
+  .terminal-contact-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .terminal-contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  
+  @media (min-width: 640px) {
+    .terminal-contact-links {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+  }
+  
+  .terminal-contact-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--terminal-border);
+    border-radius: 8px;
+    color: var(--terminal-text);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    font-family: var(--font-mono);
+  }
+  
+  .terminal-contact-link svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--terminal-accent-alpha);
+    transition: all 0.3s ease;
+  }
+  
+  .terminal-contact-link:hover {
+    background-color: rgba(229, 62, 62, 0.15);
+    border-color: rgba(229, 62, 62, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .terminal-contact-link:hover svg {
+    color: var(--terminal-accent);
+    transform: scale(1.1);
+  }
+  
+  /* Terminal Footer */
+  .terminal-footer {
+    background-color: var(--terminal-header);
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--terminal-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .terminal-footer-prompt {
+    font-family: monospace;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .terminal-prompt-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 15px;
+    background-color: var(--terminal-accent);
+    animation: blink 1s step-start infinite;
+    margin-left: 0.5rem;
+  }
+  
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  
+  .terminal-footer-info {
+    color: var(--terminal-text);
+    opacity: 0.5;
+    font-size: 0.75rem;
+  }
+  
+  /* Scrollbar Styling */
+  .terminal-content::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .terminal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+  }
+  
+  .terminal-content::-webkit-scrollbar-thumb {
+    background-color: var(--terminal-accent-alpha);
+    border-radius: 4px;
+  }
+  
+  .terminal-content::-webkit-scrollbar-thumb:hover {
+    background-color: var(--terminal-accent);
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .terminal-service-grid,
+    .terminal-skills-grid,
+    .terminal-tech-grid,
+    .terminal-projects-grid {
+      grid-template-columns: repeat(1, 1fr);
+      gap: 0.75rem;
+    }
+    
+    .terminal-tech-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    
+    .terminal-tech-logo {
+      width: 2.25rem;
+      height: 2.25rem;
+      font-size: 1.2rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    .terminal-tech-name {
+      font-size: 0.7rem;
+    }
+    
+    .terminal-quote-container {
+      padding: 1.25rem;
+    }
+    
+    .terminal-quote-text {
+      font-size: 1rem;
+      margin-top: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    
+    .terminal-quote-author-name {
+      font-size: 0.9rem;
+    }
+    
+    .terminal-quote-author-title {
+      font-size: 0.75rem;
+    }
+    
+    .terminal-footer {
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+  }
+  
+  /* Fix for mobile Safari viewport issues */
+  @supports (-webkit-touch-callout: none) {
+    .terminal-window {
+      height: -webkit-fill-available;
+    }
+  }
+  
+  /* Fixed header on scroll for mobile */
+  @media (max-width: 768px) {
+    .terminal-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    /* Each section needs more spacing on mobile */
+    .terminal-section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--terminal-border);
+    }
+    
+    .terminal-section:last-child {
+      border-bottom: none;
+      margin-bottom: 1rem;
+    }
+    
+    /* Adjust font sizes for better readability on mobile */
+    .terminal-main-grid {
+      gap: 2rem;
+    }
+    
+    .terminal-section-content {
+      font-size: 0.9rem;
+    }
+  }
+  
+  /* Optimize touch targets for mobile */
+  @media (max-width: 768px) {
+    .terminal-nav-link,
+    .terminal-contact-link,
+    .terminal-skill-item {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+  }
+  
+  /* Active navigation link */
+  .terminal-nav-link.active {
+    background-color: var(--terminal-accent-alpha);
+    color: white;
+    border-color: var(--terminal-accent);
+  }
+  
+  /* Animations for better performance */
+  .terminal-tech-item,
+  .terminal-skill-category,
+  .terminal-skill-item,
+  .terminal-service-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    will-change: opacity, transform;
+  }
+  
+  .terminal-tech-item.is-visible,
+  .terminal-skill-category.is-visible,
+  .terminal-skill-item.is-visible,
+  .terminal-service-item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Remove animation delay on mobile for better performance */
+  @media (max-width: 768px) {
+    .terminal-tech-item,
+    .terminal-skill-category,
+    .terminal-skill-item {
+      animation: none;
+      animation-delay: 0ms !important;
+    }
+  }
+  
+  /* Improved scrolling on mobile */
+  html, body {
+    overscroll-behavior-y: contain;
+    scroll-padding-top: 70px; /* Height of fixed header */
+  }
+  
+  @media (max-width: 768px) {
+    /* Navbar with backdrop filter for better readability */
+    .terminal-navbar {
+      position: sticky;
+      top: 53px; /* Height of terminal header */
+      z-index: 90;
+      background-color: rgba(16, 16, 18, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      margin-top: -1.5rem;
+      margin-left: -0.75rem;
+      margin-right: -0.75rem;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--terminal-border);
+    }
+  }
+  
+  /* Loading state and transition improvements */
+  .terminal-loading {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Performance optimizations */
+  .terminal-tech-logo svg,
+  .terminal-service-icon svg,
+  .terminal-contact-link svg {
+    will-change: transform;
+  }
+  
+  /* Improved section content spacing */
+  .terminal-section-content {
+    margin-top: 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .terminal-section-content {
+      margin-top: 0.75rem;
+    }
+    
+    /* Improved readability for text on mobile */
+    p {
+      line-height: 1.6;
+    }
+    
+    /* Fix content that might overflow on small screens */
+    .terminal-content {
+      overflow-x: hidden;
+    }
+  }
+</style>
+
 <script>
-  import { stagger, spring, timeline, type TimelineDefinition } from "motion";
-  import { loaderAnimation } from "../lib/constants";
-  const cards = document.querySelectorAll(".card");
-
-  const sequence = [
-    loaderAnimation,
-    [
-      cards,
-      { y: ["40%", "0%"], opacity: [0, 1] },
-      {
-        at: "-0.1",
-        duration: 0.4,
-        delay: stagger(0.3),
-        easing: spring({ velocity: 100, stiffness: 50, damping: 10 }),
-      },
-    ],
-  ];
-
-  timeline(sequence as TimelineDefinition);
+  // Typewriter effect for terminal commands
+  document.addEventListener('DOMContentLoaded', () => {
+    // Detect if device is mobile
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    
+    // Lazy loading observer for animation effects
+    const animationObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          animationObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px 50px 0px' });
+    
+    // Apply to animation elements
+    document.querySelectorAll('.terminal-tech-item, .terminal-skill-category, .terminal-skill-item, .terminal-service-item')
+      .forEach(el => animationObserver.observe(el));
+    
+    // Typewriter effect with performance optimizations
+    const commandObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const prompt = entry.target;
+          const command = prompt.querySelector('.terminal-prompt-command');
+          if (command) {
+            const text = command.textContent || '';
+            command.textContent = '';
+            
+            // Skip typewriter on mobile for better performance
+            if (isMobile) {
+              command.textContent = text;
+              commandObserver.unobserve(prompt);
+              return;
+            }
+            
+            let i = 0;
+            const typeWriter = () => {
+              if (i < text.length) {
+                command.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50 + Math.random() * 50);
+              }
+            };
+            
+            setTimeout(typeWriter, 300);
+            commandObserver.unobserve(prompt);
+          }
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.terminal-prompt, .terminal-prompt-mini').forEach(prompt => {
+      commandObserver.observe(prompt);
+    });
+    
+    // Smooth scrolling with offset for fixed header on mobile
+    document.querySelectorAll('.terminal-nav-link').forEach(function(link) {
+      link.addEventListener('click', function(this: HTMLAnchorElement, e: Event) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href')?.substring(1);
+        if (targetId) {
+          const targetElement = document.getElementById(targetId);
+          
+          if (targetElement) {
+            const headerHeight = isMobile ? document.querySelector('.terminal-header')?.clientHeight || 0 : 0;
+            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+            
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
+    });
+    
+    // Add active class to nav links on scroll
+    const sections = document.querySelectorAll('.terminal-section');
+    const navLinks = document.querySelectorAll('.terminal-nav-link');
+    
+    const handleScroll = () => {
+      let current = '';
+      const headerHeight = isMobile ? document.querySelector('.terminal-header')?.clientHeight || 0 : 0;
+      
+      sections.forEach((section) => {
+        const sectionTop = section.getBoundingClientRect().top;
+        if (sectionTop <= headerHeight + 100) {
+          current = section.getAttribute('id') || '';
+        }
+      });
+      
+      navLinks.forEach((link) => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }
+      });
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    
+    // Initial call to set active nav item
+    handleScroll();
+  });
 </script>
 
-<Layout
-  title="Gianmarco Cavallo - Freelance front-end Developer"
-  description="I'm a developer based in Italy, passionate about user experience and specializing in engaging animations and micro-interactions. My primary tools of choice include: JavaScript, React, Solid.js, Astro, Svelte, and Node.js."
->
-  <main
-    class="text-white m-auto p-2 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:h-screen lg:grid-rows-8 lg:grid-cols-4 lg:gap-4 lg:max-h-[800px]"
-  >
-    <IntroCard />
-    <AboutMe />
-    <ContactsCard />
-    <TimeZone />
-    <Now />
-    <Card
-      colSpan="md:col-span-1"
-      rowSpan="md:row-span-1"
-      title="Countries I visited"
-      href="travel"
-      colorText="text-neutral-900"
-    >
-      <div class="h-full w-full absolute inset-0 -z-10">
-        <Globe client:load />
-      </div>
-    </Card>
-    <Card
-      colSpan="md:col-span-1"
-      rowSpan="md:row-span-2 flex gap-4"
-      title="Blog"
-      href="/blog"
-    >
-      <div class="flex flex-col gap-4">
-        {
-          posts?.slice(0, 3).map((post) => (
-            // <a
-            //   class="text-sm md:text-base decoration-none flex justify-between"
-            //   href={`/blog/${post.id}`}
-            // >
-            <div class="list-none w-full text-neutral-100 hover:text-neutral-400 ease-in-out transition-colors border-b-neutral-400 border-dashed border-b-1 my-0">
-              <p class="inline-block whitespace-nowrap text-xs">
-                {post.data.title}
-              </p>
-              {post.data.pubDate && (
-                <time
-                  class="text-right tabular-nums text-xs"
-                  datetime={post.data.pubDate.toISOString()}
-                  data-date={post.data.pubDate.toISOString()}
-                >
-                  {formatDate(post.data.pubDate)}
-                </time>
-              )}
-            </div>
-            // </a>
-          ))
-        }
-      </div>
-    </Card>
-    <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
-      <p class="text-xs">
-        © 2024 · Crafted with ♥️ using <a
-          href="https://astro.build/"
-          target="_blank"
-          class="text-red-500">Astro</a
-        > by Gianmarco.
-      </p>
-    </Card>
-  </main>
-</Layout>
+<!-- 
+CHANGE LOG:
+===========
+Tanggal: [Tanggal Pengembangan]
+Developer: Khuzayfah Redo
+
+Perubahan Layout untuk Responsivitas:
+-------------------------------------
+1. Perbaikan Terminal Window:
+   - Mengubah margin dan padding untuk tampilan yang lebih rapi
+   - Mengoptimalkan layout pada smartphone dengan menghilangkan border radius
+   - Menggunakan viewport height penuh pada mobile
+
+2. Optimasi Navigasi:
+   - Membuat navigasi sticky saat scroll pada mobile
+   - Menambahkan highlight pada menu aktif
+   - Memastikan navigasi tetap terlihat saat scrolling
+   - Memperbaiki scroll behavior dengan offset yang tepat
+
+3. Perbaikan Grid & Layout:
+   - Menyesuaikan grid untuk tiap ukuran layar (mobile, tablet, desktop)
+   - Mengubah contact links menjadi full width pada mobile
+   - Memperbaiki padding dan margin untuk tampilan lebih rapi
+   - Mengurangi spacing berlebih pada mobile
+
+4. Optimasi Performa:
+   - Mengurangi animasi pada mobile untuk performa lebih baik
+   - Menggunakan lazy loading untuk elemen yang belum terlihat
+   - Mematikan typewriter effect pada mobile
+   - Menambahkan will-change untuk optimasi render pada browser
+
+5. Peningkatan Aksesibilitas:
+   - Meningkatkan kontras warna untuk teks lebih mudah dibaca
+   - Memperbesar ukuran target sentuh pada elemen interaktif 
+   - Meningkatkan line height pada paragraf untuk keterbacaan lebih baik
+
+Periksa log:
+- Pastikan tampilan responsif pada berbagai ukuran layar
+- Test performa scrolling pada perangkat mobile
+- Periksa animasi dan transisi berjalan dengan lancar
+- Verifikasi navigasi berfungsi dengan benar pada semua ukuran layar
+-->
