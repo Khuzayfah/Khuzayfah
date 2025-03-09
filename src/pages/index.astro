@@ -13,6 +13,13 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
 ---
 
 <BaseLayout>
+  <!-- Preconnect untuk meningkatkan kecepatan loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="https://www.facebook.com" />
+  <link rel="dns-prefetch" href="https://wa.me" />
+  <link rel="dns-prefetch" href="https://singrank.com" />
+  
   <div class="terminal-window">
     <!-- Terminal Header -->
     <div class="terminal-header">
@@ -258,6 +265,10 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
                       <Icon name="ri:whatsapp-line" />
                       <span>WhatsApp</span>
                     </a>
+                    <a href="https://singrank.com" class="terminal-contact-link" target="_blank" rel="noopener noreferrer">
+                      <Icon name="ri:global-line" />
+                      <span>Website</span>
+                    </a>
                   </div>
                 </Card>
               </div>
@@ -308,6 +319,7 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
     display: flex;
     flex-direction: column;
     height: calc(100vh - 2rem);
+    contain: content; /* Meningkatkan performa render */
   }
   
   @media (max-width: 768px) {
@@ -1307,6 +1319,21 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
   body.page-loaded {
     opacity: 1;
   }
+
+  /* Peningkatan performa loading dan rendering */
+  img, svg {
+    content-visibility: auto; /* Meningkatkan performa rendering */
+    contain: layout paint style; /* Meningkatkan performa rendering */
+  }
+  
+  /* Load optimizations untuk content yang belum terlihat */
+  .terminal-tech-grid img,
+  .terminal-skill-category,
+  .terminal-service-item,
+  .terminal-projects-grid .card {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 1000px; /* Sediakan placeholder space */
+  }
 </style>
 
 <script>
@@ -1314,6 +1341,54 @@ import { services, skills, techBrands, quotes, bio, projects } from "../data";
   document.addEventListener('DOMContentLoaded', () => {
     // Detect if device is mobile
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    
+    // Lazy loading implementation
+    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+    if ('loading' in HTMLImageElement.prototype) {
+      // Browser supports native lazy loading
+      lazyImages.forEach(img => {
+        img.src = img.dataset.src;
+      });
+    } else {
+      // Fallback for browsers that don't support lazy loading
+      const lazyImageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src;
+            observer.unobserve(img);
+          }
+        });
+      });
+      
+      lazyImages.forEach(img => {
+        lazyImageObserver.observe(img);
+      });
+    }
+    
+    // Prioritas rendering komponen yang terlihat
+    const deferRender = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const section = entry.target;
+          setTimeout(() => {
+            section.style.visibility = 'visible';
+            section.style.opacity = '1';
+          }, 100);
+          deferRender.unobserve(section);
+        }
+      });
+    }, { rootMargin: '200px' });
+    
+    // Aplikasikan defer rendering ke bagian-bagian yang tidak terlihat awal
+    document.querySelectorAll('.terminal-section').forEach((section, index) => {
+      if (index > 1) { // Biarkan 2 section pertama untuk loading cepat
+        section.style.visibility = 'hidden';
+        section.style.opacity = '0';
+        section.style.transition = 'opacity 0.3s ease';
+        deferRender.observe(section);
+      }
+    });
     
     // Lazy loading observer for animation effects
     const animationObserver = new IntersectionObserver((entries) => {

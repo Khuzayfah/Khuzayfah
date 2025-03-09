@@ -58,6 +58,50 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         timestamp: new Date().toISOString()
       });
     </script>
+    
+    <!-- Performance optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Resource hints -->
+    <link rel="dns-prefetch" href="https://www.facebook.com" />
+    <link rel="dns-prefetch" href="https://wa.me" />
+    <link rel="dns-prefetch" href="https://singrank.com" />
+    
+    <!-- Preload critical assets -->
+    <link rel="preload" as="style" href="/global.css">
+    <link rel="preload" as="font" href="/fonts/YourFont.woff2" type="font/woff2" crossorigin>
+    
+    <!-- Critical CSS inline -->
+    <style>
+      /* Critical CSS untuk loading awal */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        background-color: #0f0f11;
+        color: #f0f0f0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        overflow-x: hidden;
+        text-rendering: optimizeSpeed;
+        -webkit-font-smoothing: antialiased;
+      }
+      
+      /* Prefers reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+    
+    <slot name="head"/>
   </head>
   <body>
     <div id="app">
@@ -83,6 +127,36 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
             timestamp: new Date().toISOString()
           });
         });
+      });
+    </script>
+    
+    <!-- Defer non-critical JavaScript -->
+    <script type="module" defer>
+      // Analytik and tracking can be deferred
+      window.addEventListener('load', () => {
+        // Load performance metrics
+        if ('performance' in window) {
+          window.performance.mark('fully_loaded');
+          
+          // Measure and log performance
+          setTimeout(() => {
+            const navEntry = performance.getEntriesByType('navigation')[0];
+            const paintEntries = performance.getEntriesByType('paint');
+            
+            const fcpEntry = paintEntries.find(entry => entry.name === 'first-contentful-paint');
+            
+            // Log performance data
+            console.log(`Time to First Byte: ${navEntry.responseStart}ms`);
+            console.log(`DOM Content Loaded: ${navEntry.domContentLoadedEventEnd}ms`);
+            console.log(`First Contentful Paint: ${fcpEntry ? fcpEntry.startTime : 'N/A'}ms`);
+            console.log(`Load Complete: ${navEntry.loadEventEnd}ms`);
+            
+            // Cleanup resources tidak perlu
+            document.querySelectorAll('[data-src-lazy]').forEach(el => {
+              if (!el.loading) el.removeAttribute('data-src-lazy');
+            });
+          }, 3000);
+        }
       });
     </script>
   </body>
